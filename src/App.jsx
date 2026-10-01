@@ -1,7 +1,7 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 import styles from "./style";
+
 import {
   Navbar,
   Hero,
@@ -36,7 +36,7 @@ const App = () => {
             key="content"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.75, delay: 0.5 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
             <div className={`${styles.paddingX} ${styles.flexCenter}`}>
               <div className={`${styles.boxWidth}`}>

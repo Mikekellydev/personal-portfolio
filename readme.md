@@ -11,9 +11,10 @@
 3. [Use as a theme](#using-as-a-theme-)
 4. [Contributing](#contributing-)
 5. [Installation Guide](#installation-guide-)
-6. [Sample Git Workflow](#sample-git-workflow)
-7. [References & Inspirations](#references--inspirations-)
-8. [Illustrations](#illustrations-%EF%B8%8F)
+6. [Tests](#tests)
+7. [Sample Git Workflow](#sample-git-workflow)
+8. [References & Inspirations](#references--inspirations-)
+9. [Illustrations](#illustrations-%EF%B8%8F)
    <br>
 
 ## Tech Stack 🧰
@@ -158,6 +159,14 @@ our community aspires to be a respectful place both during online and in-person 
 
 - `npx netlify dev`
 
+## Tests
+
+E2E tests use [Cypress](https://www.cypress.io/). 
+
+Run the tests with `npm run cypress:open` (interactive) or `npm run cypress:run` (headless).
+
+Tests can be triggered on PRs by adding the `run-tests` label. All tests must pass before merging.
+
 ### Testing the LinkedIn Import
 
 If you're making changes to the LinkedIn import functionality, you can run the test suite to ensure everything works as expected:
@@ -195,3 +204,11 @@ If you're making changes to the LinkedIn import functionality, you can run the t
 
 - [Coding Lottie](https://lottiefiles.com/90189-coding) by Yamesh Sai Balaji
 - [Quiz Mode Lottie](https://lottiefiles.com/92377-quiz-mode) by SenecaDan
+
+
+## Contributors
+Made by [@mittal-parth](https://github.com/mittal-parth) and [community](https://github.com/mittal-parth/personal-portfolio/graphs/contributors) 🩵
+<br><br>
+<a href="https://github.com/mittal-parth/personal-portfolio/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=mittal-parth/personal-portfolio" />
+</a>

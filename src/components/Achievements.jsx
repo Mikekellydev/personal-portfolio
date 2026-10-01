@@ -1,55 +1,17 @@
-import React, { useState, useEffect, useRef } from "react"; // Added useRef
+import React from "react";
 import { BsLink45Deg } from "react-icons/bs";
-import { achievements } from "../constants";
 import { AiFillGithub } from "react-icons/ai";
 import { FaYoutube } from "react-icons/fa";
 import { TiNews } from "react-icons/ti";
+import { motion } from "framer-motion";
+import { LinkPreview } from "./LinkPreview";
+import { achievements } from "../constants";
 import styles from "../style";
 
 const Achievements = () => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardTotalWidth, setCardTotalWidth] = useState(0); // Added state for card width
-  const containerRef = useRef(null); // Added ref
-
-  useEffect(() => {
-    const updateCardWidth = () => {
-      if (containerRef.current) {
-        const card = containerRef.current.querySelector('.achievement-card');
-        if (card) {
-          const cardWidth = card.offsetWidth;
-          const cardMargin = parseInt(window.getComputedStyle(card).marginRight, 10); 
-
-          setCardTotalWidth(cardWidth + cardMargin); 
-        }
-      }
-    };
-
-    updateCardWidth(); 
-    window.addEventListener("resize", updateCardWidth); 
-
-    return () => {
-      window.removeEventListener("resize", updateCardWidth); 
-    };
-  }, []);
-
-  const handleNext = () => {
-    if (currentIndex < achievements.length - 1) {
-      setCurrentIndex((prevIndex) => prevIndex + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex((prevIndex) => prevIndex - 1);
-    }
-  };
-
-  const isNextDisabled = currentIndex >= achievements.length - 1;
-  const isPrevDisabled = currentIndex === 0;
-
   return (
     <section
-      className="bg-primary overflow-hidden text-white mt-5 md:mt-10 relative"
+      className="bg-primary text-white mt-5 md:mt-10 relative"
       id="achievements"
     >
       <div className={`bg-primary ${styles.flexCenter} ${styles.paddingX}`}>
@@ -61,34 +23,13 @@ const Achievements = () => {
       </div>
       <div className="absolute z-[0] w-[60%] h-[60%] -left-[50%] rounded-full blue__gradient bottom-40" />
       <div className={`bg-primary ${styles.flexCenter} ${styles.paddingX}`}>
-        <div className={`${styles.boxWidth} overflow-hidden`}>
-          <div className="my-20">
-            <div
-              ref={containerRef}
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{
-                transform: `translateX(-${currentIndex * cardTotalWidth}px)`, // Updated to use card width
-              }}
-            >
+        <div className={`${styles.boxWidth}`}>
+          <div className="container px-2 py-10 mx-auto mb-8">
+            <div className="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2 lg:grid-cols-3">
+              {/* Render all achievement cards in scrollable grid */}
               {achievements.map((achievement, index) => (
-                <AchievementCard key={index} {...achievement} />
+                <AchievementCard key={index} index={index} {...achievement} />
               ))}
-            </div>
-            <div className="flex justify-end mb-4">
-              <button
-                onClick={handlePrev}
-                disabled={isPrevDisabled}
-                className="p-2 bg-gray-700 rounded-full disabled:opacity-50 mx-2"
-              >
-                &lt;
-              </button>
-              <button
-                onClick={handleNext}
-                disabled={isNextDisabled}
-                className="p-2 bg-gray-700 rounded-full disabled:opacity-50 mx-2"
-              >
-                &gt;
-              </button>
             </div>
           </div>
         </div>
@@ -99,19 +40,29 @@ const Achievements = () => {
 
 const AchievementCard = (props) => {
   return (
-    <div className="achievement-card flex-shrink-0 flex flex-col md:w-[400px] w-[320px] justify-around px-6 py-4 rounded-[20px] md:mr-10 mr-6 my-5 transition-colors duration-300 transform border hover:border-transparent dark:border-gray-700 dark:hover:border-transparent">
+    <motion.div
+      className="flex flex-col justify-around px-6 py-4 rounded-[20px] transition-colors transition-shadow duration-300 border hover:border-teal-200 hover:shadow-lg hover:shadow-teal-200/20 dark:border-gray-700 dark:hover:border-transparent"
+      initial={{ y: 20, opacity: 0 }}
+      whileInView={{ y: 0, opacity: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
+      {/* Achievement icon/logo */}
       <img
         src={props.icon}
         alt={props.event}
         className="w-[45px] h-[45px] rounded-full mt-1 mb-1"
       />
       <div className="flex flex-col justify-end mt-4 mb-1">
+        {/* Event name */}
         <p className="font-poppins font-normal text-xl text-white leading-[24px] mb-2">
           {props.event}
         </p>
+        {/* Position/Award */}
         <p className="font-poppins italic font-normal text-lg text-gradient mb-3">
           {props.position}
         </p>
+        {/* Achievement descriptions - only render if content exists */}
         {props.content1 && (
           <p className="font-poppins font-normal text-dimWhite text-sm mb-1">
             🚀 {props.content1}
@@ -128,49 +79,67 @@ const AchievementCard = (props) => {
           </p>
         )}
       </div>
-      <div className="flex flex-row mb-2 font-poppins font-normal text-dimWhite">
+      {/* Social/Project links with hover preview - only render if link exists */}
+      <div className="flex flex-row mb-2 font-poppins font-normal text-dimWhite gap-3">
         {props.article && (
-          <a
-            className="inline-flex items-center mr-2 hover:text-teal-200"
-            href={props.article}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <TiNews size="1.5rem" className="inline" />
-          </a>
+          <LinkPreview url={props.article}>
+            <a
+              href={props.article}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center hover:text-teal-200 hover:scale-110 transition-all"
+            >
+              <TiNews size="1.5rem" className="inline" />
+            </a>
+          </LinkPreview>
         )}
         {props.youtube && (
-          <a
-            className="inline-flex items-center mr-2 hover:text-teal-200"
-            href={props.youtube}
-            target="_blank"
-            rel="noopener noreferrer"
+          <LinkPreview
+            url={props.youtube}
+            className="inline-flex items-center hover:text-teal-200 hover:scale-110 transition-all"
           >
-            <FaYoutube size="1.5rem" className="inline" />
-          </a>
+            <a
+              href={props.youtube}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center"
+            >
+              <FaYoutube size="1.5rem" className="inline" />
+            </a>
+          </LinkPreview>
         )}
         {props.github && (
-          <a
-            className="inline-flex items-center mr-2 hover:text-teal-200"
-            href={props.github}
-            target="_blank"
-            rel="noopener noreferrer"
+          <LinkPreview
+            url={props.github}
+            className="inline-flex items-center hover:text-teal-200 hover:scale-110 transition-all"
           >
-            <AiFillGithub size="1.5rem" className="inline" />
-          </a>
+            <a
+              href={props.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center"
+            >
+              <AiFillGithub size="1.5rem" className="inline" />
+            </a>
+          </LinkPreview>
         )}
         {props.project && (
-          <a
-            className="inline-flex items-center hover:text-teal-200"
-            href={props.project}
-            target="_blank"
-            rel="noopener noreferrer"
+          <LinkPreview
+            url={props.project}
+            className="inline-flex items-center hover:text-teal-200 hover:scale-110 transition-all"
           >
-            <BsLink45Deg size="1.5rem" className="inline" />
-          </a>
+            <a
+              href={props.project}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center"
+            >
+              <BsLink45Deg size="1.5rem" className="inline" />
+            </a>
+          </LinkPreview>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
